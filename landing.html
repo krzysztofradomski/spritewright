@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Diorama — Tiny worlds, approved by hand</title>
+  <meta name="description" content="Diorama Asset Studio is the local art bench for cozy isometric games: generate, inspect, animate and approve every asset by hand.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%230F2749'/%3E%3Ctext x='31' y='47' text-anchor='middle' font-family='Georgia,serif' font-weight='700' font-size='40' fill='%23FAF7EC'%3ED%3C/text%3E%3Ccircle cx='51' cy='48' r='4' fill='%23FDD34E'/%3E%3C/svg%3E">
+  <script>
+    // Same key as the studio, so a pinned theme follows you between the two.
+    try {
+      const theme = localStorage.getItem("asset-studio.theme");
+      if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
+      if (localStorage.getItem("asset-studio.style") === "classic") document.documentElement.dataset.style = "classic";
+    } catch {}
+  </script>
+  <style>
+    :root{
+      --navy:#0f2749;--ivory:#faf7ec;--yellow:#fdd34e;--sky:#56abe6;--vermilion:#e15b4f;--green:#2d9b68;
+      --ink:var(--navy);--soft:#3a5170;--paper:var(--ivory);--panel:var(--navy);
+      --eyebrow:#2f7fc0;--line:rgba(15,39,73,.18);--grid:rgba(15,39,73,.04);--shadow:var(--navy);
+      --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+      --sans:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+      color-scheme:light;
+    }
+    @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+      --ink:var(--ivory);--soft:#b5c0cf;--paper:#0b1d36;--panel:#132f55;
+      --eyebrow:var(--sky);--line:rgba(250,247,236,.16);--grid:rgba(250,247,236,.035);--shadow:#050e1b;color-scheme:dark}}
+    :root[data-theme="dark"]{
+      --ink:var(--ivory);--soft:#b5c0cf;--paper:#0b1d36;--panel:#132f55;
+      --eyebrow:var(--sky);--line:rgba(250,247,236,.16);--grid:rgba(250,247,236,.035);--shadow:#050e1b;color-scheme:dark}
+
+    *{box-sizing:border-box}html{scroll-behavior:smooth}
+    body{margin:0;color:var(--ink);background:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px),var(--paper);background-size:40px 40px;font-family:var(--sans);-webkit-font-smoothing:antialiased}
+    a{color:inherit}::selection{background:var(--yellow);color:var(--navy)}
+    .wrap{width:min(1180px,calc(100% - 40px));margin:0 auto}
+    .mark{font:700 clamp(1.85rem,4vw,2.35rem)/1 var(--serif);letter-spacing:-.055em;text-decoration:none}.mark b{color:var(--yellow)}
+    .eyebrow,.mono{font:700 .72rem var(--mono);letter-spacing:.15em;text-transform:uppercase}
+    .eyebrow{margin:0 0 18px;color:var(--eyebrow)}
+    h1,h2,h3{font-family:var(--serif);letter-spacing:-.055em;margin:0}
+
+    .site-head{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line)}
+    .coords{display:flex;gap:28px;color:var(--soft);font:.7rem var(--mono);letter-spacing:.08em}
+    .head-actions{display:flex;align-items:center;gap:18px}
+    .status{display:flex;align-items:center;gap:10px}.status i{width:8px;height:8px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 5px rgba(253,211,78,.2)}
+    .theme{padding:7px 10px;color:var(--ink);background:transparent;border:1px solid var(--line);font:700 .62rem var(--mono);letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+    .theme:hover{border-color:var(--ink)}
+
+    .hero{min-height:calc(100svh - 72px);padding:clamp(28px,6vh,72px) 0;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(340px,.9fr);gap:clamp(40px,6vw,96px);align-items:center}
+    h1{max-width:760px;margin:0 0 clamp(16px,3vh,28px);font-size:clamp(2.8rem,min(6.4vw,10vh),6.8rem);line-height:.88}
+    .lede{max-width:600px;margin:0 0 clamp(20px,3.5vh,34px);color:var(--soft);font-size:clamp(1rem,min(1.4vw,2.4vh),1.18rem);line-height:1.6}
+    .actions{display:flex;flex-wrap:wrap;align-items:center;gap:24px}
+    .button{min-height:50px;padding:0 20px;display:inline-flex;align-items:center;gap:26px;color:var(--navy);background:var(--yellow);border:1px solid var(--navy);box-shadow:4px 4px 0 var(--shadow);font-weight:750;text-decoration:none;transition:transform .12s,box-shadow .12s}
+    .button:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--shadow)}
+    .button:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--shadow)}
+    .meta{font:.7rem var(--mono);color:var(--soft)}
+
+    /* The instrument: a bench log over a plate holding the asset and its stamp. */
+    .instrument{background:var(--panel);color:var(--ivory);border:1px solid var(--navy);box-shadow:14px 14px 0 var(--yellow)}
+    .bar{min-height:46px;padding:0 19px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(250,247,236,.18);font:.64rem var(--mono);letter-spacing:.12em}
+    .dots{display:flex;gap:7px}.dots i{width:10px;height:10px;border-radius:50%;background:var(--vermilion)}.dots i:nth-child(2){background:var(--yellow)}.dots i:nth-child(3){background:var(--green)}
+    .ready{color:#72d1a5}
+    .terminal{padding:clamp(14px,2.6vh,26px) 24px clamp(12px,2.2vh,22px);font:clamp(.72rem,1.2vw,.82rem)/1.9 var(--mono)}.terminal p{margin:0}.terminal em{font-style:normal;color:var(--yellow)}.terminal span{float:right}
+    .plate{margin:0 18px 18px;display:grid;grid-template-columns:clamp(120px,38%,170px) minmax(0,1fr);background:var(--ivory);color:var(--navy)}
+    .plate figure{margin:0;display:grid;place-items:center;aspect-ratio:1;background:repeating-conic-gradient(#ece6d3 0 25%,var(--ivory) 0 50%) 50%/16px 16px;border-right:1px solid rgba(15,39,73,.18)}
+    .plate figure{overflow:hidden}.plate figure img{width:84%;height:auto}
+    .plate-copy{padding:16px 18px;display:grid;align-content:space-between;gap:12px;position:relative}
+    .plate small{display:block;margin-bottom:4px;font:.56rem var(--mono);letter-spacing:.11em}
+    .plate strong{font:700 clamp(.95rem,1.5vw,1.15rem) var(--serif);letter-spacing:-.03em}
+    .states{display:flex;align-items:center;gap:12px}.route{flex:1;height:1px;background:var(--navy);opacity:.35}
+    .stamp{display:inline-block;padding:7px 10px;border:2px solid var(--vermilion);color:var(--vermilion);font:800 .62rem/1.25 var(--mono);letter-spacing:.14em;text-align:center;transform:rotate(-5deg)}
+    .plate .stamp{position:absolute;right:16px;top:14px}
+
+    .rule{border-top:1px solid var(--line)}
+    .briefing{padding:120px 0}
+    .heading{display:grid;grid-template-columns:.55fr 1.45fr;gap:36px;margin-bottom:72px}
+    h2{font-size:clamp(2.8rem,6vw,5.2rem);line-height:.95}
+    .features{display:grid;grid-template-columns:repeat(4,1fr);border-block:1px solid var(--ink)}
+    .features article{padding:26px 26px 34px 0;display:flex;flex-direction:column}
+    .features article+article{padding-left:26px;border-left:1px solid var(--line)}
+    .features small{font:.72rem var(--mono);color:var(--eyebrow)}
+    .features h3{min-height:2.1em;margin:22px 0 14px;font-size:clamp(1.55rem,2.3vw,2.05rem);font-weight:700;letter-spacing:-.045em;line-height:1.05}
+    .features p{margin:0;color:var(--soft);line-height:1.65}
+
+    .principles{padding:110px clamp(28px,5vw,72px);display:grid;grid-template-columns:1fr .92fr;gap:clamp(56px,8vw,120px);background:var(--panel);color:var(--ivory)}
+    .principles .eyebrow{color:var(--sky)}
+    .principles .copy{margin:32px 0 0;color:#b8c1cd;line-height:1.75}
+    .principles ul{margin:0;padding:0;list-style:none;border-top:1px solid rgba(250,247,236,.25)}
+    .principles li{padding:22px 0;border-bottom:1px solid rgba(250,247,236,.25);color:#cbd2da;line-height:1.55}
+    .principles li::before{content:"✓";margin-right:14px;color:var(--yellow)}.principles strong{color:var(--ivory)}
+
+
+    .soon{padding:140px 0 105px}.soon h2{max-width:820px}
+    .soon .copy{max-width:610px;margin:30px 0 80px;color:var(--soft);line-height:1.75}
+    .flight{position:relative;height:1px;background:var(--ink)}
+    .flight::before{content:"";position:absolute;left:38%;width:17px;height:17px;top:-8px;border-radius:50%;background:var(--yellow);border:1px solid var(--navy)}
+    .flight span{position:absolute;top:-30px;font:.65rem var(--mono);letter-spacing:.12em}.flight span:last-child{right:0}
+
+    footer{padding:34px 0 42px;display:grid;grid-template-columns:1fr 1fr 1fr;align-items:end;border-top:1px solid var(--line);font-size:.75rem;color:var(--soft)}
+    footer p{margin:0;text-align:center}.domain{text-align:right;font-family:var(--mono)}
+
+
+    /* Classic style: the studio's original calm, Jan-inspired look. White canvas, sans type,
+       rounded cards, soft shadows, one cyan accent. Chosen with the Style button. */
+    :root[data-style="classic"]{
+      --ink:#1f2328;--soft:#6b7280;--paper:#fff;--panel:#1f2328;--eyebrow:#238bb8;--line:#e5e7eb;--grid:transparent;
+      --accent:#36a8d8;--accent-strong:#238bb8;--accent-soft:#e4f4fb;--card:#f5f6f8;--glow:rgba(16,24,40,.08);
+      --band:linear-gradient(180deg,#d6ecf5 0%,#e9f4f9 45%,#fbfdfe 100%);--serif:var(--sans)}
+    @media (prefers-color-scheme:dark){:root[data-style="classic"]:not([data-theme="light"]){
+      --ink:#e8eaed;--soft:#a3a9b1;--paper:#17181b;--panel:#1f2124;--eyebrow:#4bb6e3;--line:#2e3237;
+      --accent:#4bb6e3;--accent-strong:#6cc4ea;--accent-soft:#1d3440;--card:#25282c;--glow:rgba(0,0,0,.35);
+      --band:linear-gradient(180deg,#1d2e36 0%,#1b2227 45%,#1b1d20 100%)}}
+    :root[data-style="classic"][data-theme="dark"]{
+      --ink:#e8eaed;--soft:#a3a9b1;--paper:#17181b;--panel:#1f2124;--eyebrow:#4bb6e3;--line:#2e3237;
+      --accent:#4bb6e3;--accent-strong:#6cc4ea;--accent-soft:#1d3440;--card:#25282c;--glow:rgba(0,0,0,.35);
+      --band:linear-gradient(180deg,#1d2e36 0%,#1b2227 45%,#1b1d20 100%)}
+    :root[data-style="classic"] ::selection{color:inherit;background:var(--accent-soft)}
+    :root[data-style="classic"] :is(h1,h2,h3){font-weight:650;letter-spacing:-.035em}
+    :root[data-style="classic"] h1{line-height:.98}
+    :root[data-style="classic"] .mark{display:inline-flex;align-items:center;gap:.55rem;font:650 1.35rem/1 var(--sans);letter-spacing:-.02em}
+    :root[data-style="classic"] .mark::before{content:"";width:1.5rem;height:1.5rem;border-radius:.45rem;background:linear-gradient(135deg,var(--accent),#7fd3c1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+    :root[data-style="classic"] .mark b{display:none}
+    :root[data-style="classic"] :is(.eyebrow,.mono,.coords,.meta,.features small,.plate small,.theme,.flight span){font-family:var(--sans);letter-spacing:.01em;text-transform:none}
+    :root[data-style="classic"] .eyebrow{font-size:.85rem;font-weight:600}
+    :root[data-style="classic"] .status i{background:var(--accent);box-shadow:0 0 0 5px var(--accent-soft)}
+    :root[data-style="classic"] .theme{border-radius:999px;font-size:.75rem;font-weight:500}
+    :root[data-style="classic"] .button{color:#fff;background:var(--accent);border-color:transparent;border-radius:10px;box-shadow:0 1px 2px var(--glow),0 6px 20px var(--glow);font-weight:600}
+    :root[data-style="classic"] .button:is(:hover,:active){transform:none;background:var(--accent-strong);box-shadow:0 1px 2px var(--glow),0 6px 20px var(--glow)}
+    :root[data-style="classic"] .instrument{overflow:hidden;border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 4px var(--glow),0 18px 48px var(--glow)}
+    :root[data-style="classic"] .terminal em{color:#6cc4ea}
+    :root[data-style="classic"] .plate{overflow:hidden;border-radius:12px;background:var(--card);color:var(--ink)}
+    :root[data-style="classic"] .plate figure{background:repeating-conic-gradient(rgba(127,127,127,.14) 0 25%,transparent 0 50%) 50%/16px 16px;border-color:var(--line)}
+    :root[data-style="classic"] .route{background:var(--soft)}
+    :root[data-style="classic"] .stamp{padding:4px 10px;border:0;border-radius:999px;color:var(--accent-strong);background:var(--accent-soft);font:600 .62rem/1.3 var(--sans);letter-spacing:.02em;transform:none}
+    :root[data-style="classic"] .features{border-block-color:var(--line)}
+    :root[data-style="classic"] .principles{color:var(--ink);background:var(--band);border:1px solid var(--line);border-radius:20px}
+    :root[data-style="classic"] .principles .eyebrow{color:var(--eyebrow)}
+    :root[data-style="classic"] .principles :is(.copy,li){color:var(--soft)}
+    :root[data-style="classic"] .principles strong{color:var(--ink)}
+    :root[data-style="classic"] .principles :is(ul,li){border-color:var(--line)}
+    :root[data-style="classic"] .principles li::before{color:var(--accent)}
+    :root[data-style="classic"] .flight{background:var(--line)}
+    :root[data-style="classic"] .flight::before{background:var(--accent);border:0;box-shadow:0 0 0 5px var(--accent-soft)}
+    @media(max-width:980px){.hero{grid-template-columns:1fr;min-height:auto}.instrument{width:min(560px,calc(100% - 14px))}.heading,.principles{grid-template-columns:1fr}.features{grid-template-columns:1fr 1fr}.features article:nth-child(3){padding-left:0;border-left:0}.features article:nth-child(n+3){border-top:1px solid var(--line)}.coords{display:none}}
+    @media(max-width:680px){.wrap{width:calc(100% - 32px)}.site-head{min-height:78px}.status{display:none}.hero{padding:40px 0 64px;gap:48px}h1{font-size:clamp(3.4rem,17vw,5rem)}.instrument{box-shadow:8px 8px 0 var(--yellow)}.plate{grid-template-columns:1fr}.plate figure{border-right:0;border-bottom:1px solid rgba(15,39,73,.18);aspect-ratio:2}.plate figure img{width:34%}.briefing{padding:90px 0}.heading{margin-bottom:50px}.features{grid-template-columns:1fr}.features article,.features article+article{padding:24px 0 30px;border-left:0}.features h3{min-height:0}.features article+article{border-top:1px solid var(--line)}.principles{padding:80px 24px}.soon{padding:100px 0 80px}footer{grid-template-columns:1fr;gap:15px}footer p,.domain{text-align:left}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button{transition:none}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site-head">
+      <a class="mark" href="#top">Diorama<b>.</b></a>
+      <div class="coords"><span>ISO 30° · FIXED CAMERA</span><span>1024 × 1024 PX</span></div>
+      <div class="head-actions">
+        <div class="status mono"><i></i>Bench open</div>
+        <button class="theme" type="button" id="style">Style: diorama</button>
+        <button class="theme" type="button" id="theme">Theme: auto</button>
+      </div>
+    </header>
+  </div>
+  <main>
+    <div class="wrap">
+      <section class="hero" id="top">
+        <div>
+          <p class="eyebrow">Local art bench for cozy games</p>
+          <h1>Tiny worlds, approved by hand.</h1>
+          <p class="lede">Diorama Asset Studio generates, inspects and animates isometric game art on your own machine, then keeps every piece in candidates until a person signs it off. No auto-promotion, no stored API keys, no mystery files.</p>
+          <div class="actions">
+            <a class="button" href="/">Open the studio <span>→</span></a>
+            <span class="meta">Local-first · Plan allowance · Human approval</span>
+          </div>
+        </div>
+        <div class="instrument" aria-label="Example bench log">
+          <div class="bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>PLATE 014</span><span class="ready">● BENCH READY</span></div>
+          <div class="terminal">
+            <p><em>$</em> studio generate reed-sway --family plants</p>
+            <p>› art direction <span class="ready">applied</span></p>
+            <p>› alpha coverage 41% <span class="ready">ok</span></p>
+            <p>› sway loop · 14 frames <span class="ready">exported</span></p>
+            <p>› promotion <span>approval required</span></p>
+          </div>
+          <div class="plate">
+            <figure><img src="landing-assets/reed-sway-animated.webp" width="274" height="300" alt="Painted reed and cattail cluster swaying in a looping animation"></figure>
+            <div class="plate-copy">
+              <div><small>ANIMATED WEBP · 2 S LOOP</small><strong>reed-sway.webp</strong></div>
+              <div class="states"><div><small>NOW</small><strong>Candidate</strong></div><i class="route"></i><div><small>NEXT</small><strong>Approved</strong></div></div>
+              <span class="stamp">HUMAN<br>EYES</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="wrap rule">
+      <section class="briefing" id="briefing">
+        <div class="heading"><p class="eyebrow">The workflow</p><h2>Models can paint.<br>Diorama keeps the set in order.</h2></div>
+        <div class="features">
+          <article><small>01</small><h3>Generate with direction</h3><p>Every brief inherits the project's art direction, so reeds, ducks and lanterns share one camera and one light.</p></article>
+          <article><small>02</small><h3>Inspect the cut</h3><p>Alpha coverage, opaque bounds, crop warnings and SHA-256 are recorded before anyone looks.</p></article>
+          <article><small>03</small><h3>Animate in the lab</h3><p>Order frames or slice sprite sheets, preview the loop and save a manifest without touching the sources.</p></article>
+          <article><small>04</small><h3>Approve by hand</h3><p>Candidates stay candidates. Only a person promotes an asset, and its prompt and lineage travel with it.</p></article>
+        </div>
+      </section>
+    </div>
+
+    <div class="wrap">
+      <section class="principles">
+        <div><p class="eyebrow">Built for the bench</p><h2>Bring your generator.<br>Keep your art.</h2><p class="copy">Run Antigravity, Codex or an OpenRouter model through the plans you already pay for. Switch providers when one runs dry without losing a brief, a version or a sprite sheet.</p></div>
+        <ul>
+          <li><strong>Local-first:</strong> images and manifests live in each game's folder.</li>
+          <li><strong>Provider-neutral:</strong> the queue falls back when a generator is out.</li>
+          <li><strong>Spend-capped:</strong> paid generation stops at the limit you set.</li>
+          <li><strong>Traceable:</strong> prompts, versions and lineage stay with every file.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="wrap rule">
+      <section class="soon">
+        <p class="eyebrow">Next plate in progress</p>
+        <h2>Every asset takes the same route.</h2>
+        <p class="copy">From brief to candidate, inspection, animation and a signed-off file in the game's approved folder. Nothing skips a step.</p>
+        <div class="flight"><span>BRIEF</span><span>APPROVED · 2026</span></div>
+      </section>
+    </div>
+  </main>
+  <div class="wrap">
+    <footer><a class="mark" href="#top">Diorama<b>.</b></a><p>The local art bench for cozy isometric games.</p><p class="domain">localhost:5173</p></footer>
+  </div>
+  <script>
+    // Style and theme share the studio's keys, so a choice follows you between the two pages.
+    const cycle = (id, key, attr, order) => {
+      const button = document.getElementById(id);
+      const name = id[0].toUpperCase() + id.slice(1);
+      let value = document.documentElement.dataset[attr] || order[0];
+      const label = () => (button.textContent = `${name}: ${value}`);
+      button.addEventListener("click", () => {
+        value = order[(order.indexOf(value) + 1) % order.length];
+        if (value === order[0]) delete document.documentElement.dataset[attr];
+        else document.documentElement.dataset[attr] = value;
+        try { localStorage.setItem(key, value); } catch {}
+        label();
+      });
+      label();
+    };
+    cycle("theme", "asset-studio.theme", "theme", ["auto", "light", "dark"]);
+    cycle("style", "asset-studio.style", "style", ["diorama", "classic"]);
+  </script>
+</body>
+</html>

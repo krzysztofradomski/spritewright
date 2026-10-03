@@ -1,0 +1,324 @@
+/* Classic style: the calm, Jan-inspired workspace the studio started with. White canvas,
+   floating tinted sidebar, soft rounded cards, one cyan accent. It is a layer over
+   styles.css, restoring only what the Diorama style changed; Settings → Style sets
+   data-style="classic" on <html>. Light and dark still come from light-dark() tokens. */
+:root[data-style="classic"] {
+  --bg: light-dark(#ffffff, #17181b);
+  --grid: transparent;
+  --surface: light-dark(#ffffff, #1f2124);
+  --surface-muted: light-dark(#f5f6f8, #25282c);
+  --surface-hover: light-dark(#eef1f4, #2c3035);
+  --sidebar: linear-gradient(180deg, light-dark(#d6ecf5, #1d2e36) 0%, light-dark(#e9f4f9, #1b2227) 40%, light-dark(#fbfdfe, #1b1d20) 100%);
+  --sidebar-text: var(--text);
+  --sidebar-muted: var(--text-muted);
+  --sidebar-hover: light-dark(rgb(255 255 255 / 55%), rgb(255 255 255 / 5%));
+  --sidebar-active: light-dark(rgb(255 255 255 / 90%), rgb(255 255 255 / 9%));
+  --sidebar-active-icon: var(--accent-strong);
+  --sidebar-line: var(--border);
+  --sidebar-edge: var(--border);
+  --border: light-dark(#e5e7eb, #2e3237);
+  --border-strong: light-dark(#d1d5db, #3b4046);
+  --text: light-dark(#1f2328, #e8eaed);
+  --text-muted: light-dark(#6b7280, #a3a9b1);
+  --text-faint: light-dark(#9ca3af, #767c85);
+  --accent: light-dark(#36a8d8, #4bb6e3);
+  --accent-strong: light-dark(#238bb8, #6cc4ea);
+  --accent-soft: light-dark(#e4f4fb, #1d3440);
+  --primary: var(--accent);
+  --primary-hover: var(--accent-strong);
+  --primary-soft: var(--accent-soft);
+  --danger: light-dark(#c2413b, #f0817b);
+  --danger-soft: light-dark(#fdeeed, #3a2324);
+  --danger-border: light-dark(#f1c4c1, #5c3334);
+  --warning: light-dark(#a16207, #e5b454);
+  --warning-soft: light-dark(#fef6e0, #3a3121);
+  --success: light-dark(#2f7d57, #6fcf97);
+  --success-soft: light-dark(#e6f4ec, #1f3529);
+  --checker-a: light-dark(#eceef1, #2b2e33);
+  --checker-b: light-dark(#ffffff, #34383d);
+  --focus: 0 0 0 3px rgb(54 168 216 / 28%);
+  --shadow-sm: 0 1px 2px rgb(16 24 40 / 5%);
+  --shadow: 0 1px 2px light-dark(rgb(16 24 40 / 4%), rgb(0 0 0 / 30%)), 0 6px 20px light-dark(rgb(16 24 40 / 6%), rgb(0 0 0 / 25%));
+  --shadow-lg: var(--shadow);
+  --radius-lg: 16px;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --serif: var(--sans);
+  --mono: var(--sans);
+}
+:root[data-style="classic"] ::selection {
+  color: inherit;
+  background: var(--accent-soft);
+}
+
+/* Type: sans headings, sentence-case labels. */
+:root[data-style="classic"] :is(h1, h2, h3) {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+:root[data-style="classic"] h2 {
+  font-size: 1.05rem;
+}
+:root[data-style="classic"] h3 {
+  font-size: 0.95rem;
+}
+:root[data-style="classic"] :is(label, .sidebar-label, .section-label, .provider-section-title, .generator-field-heading > span, .sidebar-status, .tag-chips li, .job-state, .provider-state, .paid-badge, .theme-toggle button, .sidebar-brand small) {
+  letter-spacing: normal;
+  text-transform: none;
+}
+:root[data-style="classic"] label {
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+:root[data-style="classic"] .generator-field-heading > span {
+  font-size: 1rem;
+  font-weight: 400;
+}
+:root[data-style="classic"] .sidebar-label {
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+:root[data-style="classic"] .game-switcher-caption {
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+:root[data-style="classic"] .provider-section-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Shell: floating rounded sidebar with the gradient brand mark. */
+:root[data-style="classic"] .sidebar {
+  height: calc(100vh - 1rem);
+  margin: 0.5rem;
+  padding: 0.9rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+:root[data-style="classic"] .sidebar-brand {
+  grid-template-columns: 1.6rem 1fr;
+  align-items: center;
+  column-gap: 0.6rem;
+  row-gap: 0;
+  margin-bottom: 0;
+  padding: 0.2rem 0.55rem 0.9rem;
+  border-bottom: 0;
+}
+:root[data-style="classic"] .sidebar-brand::before {
+  content: "";
+  grid-row: 1 / 3;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, var(--accent) 0%, #7fd3c1 100%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 35%);
+}
+:root[data-style="classic"] .wordmark {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: normal;
+}
+:root[data-style="classic"] .wordmark span {
+  display: none;
+}
+:root[data-style="classic"] .sidebar-brand small {
+  font-size: 0.75rem;
+}
+:root[data-style="classic"] .sidebar-nav button {
+  padding: 0.42rem 0.55rem;
+  border-radius: var(--radius-sm);
+}
+:root[data-style="classic"] .sidebar-nav button.active {
+  box-shadow: var(--shadow-sm);
+  font-weight: 500;
+}
+:root[data-style="classic"] .sidebar-nav button.active::before {
+  display: none;
+}
+:root[data-style="classic"] .badge {
+  color: #fff;
+  background: var(--accent);
+  border-radius: 999px;
+}
+:root[data-style="classic"] .theme-toggle,
+:root[data-style="classic"] .theme-toggle button {
+  border-radius: 999px;
+}
+:root[data-style="classic"] .theme-toggle {
+  border-color: var(--border);
+}
+:root[data-style="classic"] .theme-toggle button {
+  font-size: 0.75rem;
+}
+:root[data-style="classic"] .theme-toggle button[aria-pressed="true"] {
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+:root[data-style="classic"] .sidebar-status {
+  padding: 0.6rem 0.55rem 0.2rem;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+:root[data-style="classic"] .status-dot {
+  background: var(--text-faint);
+}
+:root[data-style="classic"] .status-dot.live {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+:root[data-style="classic"] .studio-shell {
+  max-width: 1120px;
+  padding: 1.1rem 2rem 4rem;
+}
+:root[data-style="classic"] .topbar {
+  min-height: 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 0;
+}
+:root[data-style="classic"] .topbar h1 {
+  font-size: 1.35rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+:root[data-style="classic"] .notice {
+  background: var(--accent-soft);
+  border: 0;
+  border-radius: var(--radius-sm);
+}
+
+/* Controls and cards: soft shadows, no hard offsets or lifts. */
+:root[data-style="classic"] :is(button.primary, button[type="submit"]) {
+  color: #fff;
+  border-color: transparent;
+  box-shadow: var(--shadow-sm);
+  font-weight: 500;
+}
+:root[data-style="classic"] :is(button.primary, button[type="submit"]):is(:hover, :active):not(:disabled) {
+  box-shadow: var(--shadow-sm);
+  transform: none;
+}
+:root[data-style="classic"] button.danger-solid {
+  color: #fff;
+  background: light-dark(#c2413b, #b8433d);
+  border-color: transparent;
+  box-shadow: none;
+}
+:root[data-style="classic"] button.danger-solid:hover:not(:disabled) {
+  background: light-dark(#a9352f, #cc4d46);
+}
+:root[data-style="classic"] .panel {
+  border-color: var(--border);
+}
+:root[data-style="classic"] .section-label {
+  display: block;
+  margin: 2rem 0 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+:root[data-style="classic"] .section-label::after {
+  display: none;
+}
+:root[data-style="classic"] .asset-grid article:hover {
+  transform: none;
+}
+:root[data-style="classic"] article.is-focused {
+  box-shadow: var(--focus);
+}
+:root[data-style="classic"] .tag-chips li {
+  padding: 0.05rem 0.45rem;
+  font-size: 0.72rem;
+  border: 0;
+  border-radius: 999px;
+}
+:root[data-style="classic"] :is(.job-state, .provider-state, .paid-badge, .progress-track) {
+  border: 0;
+  border-radius: 999px;
+}
+:root[data-style="classic"] .job-state {
+  padding: 0.12rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+:root[data-style="classic"] .provider-state {
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+:root[data-style="classic"] .provider-state.ready {
+  color: light-dark(#1f7a4d, #6fd39b);
+  background: light-dark(#e6f5ec, #1d3326);
+}
+:root[data-style="classic"] .paid-badge {
+  padding: 0 0.4rem;
+  color: light-dark(#8a5a00, #f3c969);
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: light-dark(#fdf3dc, #3a3020);
+}
+:root[data-style="classic"] .project-switcher > summary {
+  background: var(--accent-soft);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  box-shadow: none;
+}
+:root[data-style="classic"] .project-switcher > summary:hover,
+:root[data-style="classic"] .project-switcher[open] > summary {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+:root[data-style="classic"] .project-switcher > summary .icon:first-child {
+  color: var(--accent-strong);
+}
+
+/* A running job: accent edge, tinted ground and a slow pulsing ring. */
+:root[data-style="classic"] .job-card.is-running {
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent), var(--shadow);
+  animation: classic-job-running-pulse 2.4s ease-in-out infinite;
+}
+:root[data-style="classic"] .job-card.is-running::before {
+  inset: 0.75rem auto 0.75rem 0;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 0 3px 3px 0;
+  animation: none;
+}
+@keyframes classic-job-running-pulse {
+  50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 6%, transparent), var(--shadow); }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-style="classic"] .job-card.is-running {
+    animation: none;
+  }
+}
+:root[data-style="classic"] .lightbox,
+:root[data-style="classic"] .modal::backdrop {
+  background: rgb(15 18 22 / 55%);
+}
+
+:root[data-style="classic"] .animation-play-overlay {
+  color: #fff;
+  border-color: transparent;
+  box-shadow: var(--shadow-sm);
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+}
+:root[data-style="classic"] .animation-play-overlay:is(:hover, :active):not(:disabled) {
+  box-shadow: var(--shadow-sm);
+  transform: none;
+}
+:root[data-style="classic"] .animation-play-overlay.is-playing {
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
