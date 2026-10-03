@@ -63,3 +63,14 @@ test("an out-of-range grid is rejected", async () => {
   });
   expect(response.statusCode).toBe(400);
 });
+
+test("uploads accept images larger than Fastify's 1 MB default body limit", async () => {
+  const { app } = await studio();
+  // Random pixels don't compress, so this PNG is about 1.2 MB, 1.6 MB as base64.
+  const noise = await sharp(Buffer.from(Array.from({ length: 640 * 640 * 3 }, () => Math.floor(Math.random() * 256))), { raw: { width: 640, height: 640, channels: 3 } }).png().toBuffer();
+  const response = await app.inject({
+    method: "POST", url: "/api/uploads",
+    payload: { gameId: "test-game", filename: "big.png", contentBase64: noise.toString("base64") },
+  });
+  expect(response.statusCode).toBe(201);
+});

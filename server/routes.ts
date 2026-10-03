@@ -626,7 +626,8 @@ export async function registerRoutes(app: FastifyInstance, rootDir: string) {
       });
     }
   });
-  app.post("/api/uploads", async (request, reply) => {
+  // The body is base64, so allow a little over the 24 MB contentBase64 cap.
+  app.post("/api/uploads", { bodyLimit: 25_000_000 }, async (request, reply) => {
     const parsed = z
       .object({
         gameId: game,
