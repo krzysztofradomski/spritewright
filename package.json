@@ -1,5 +1,5 @@
 {
-  "name": "@cozy/asset-studio",
+  "name": "spritewright",
   "private": true,
   "type": "module",
   "scripts": {

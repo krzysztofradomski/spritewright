@@ -512,7 +512,7 @@ export function App() {
         const tookMs = job.startedAt && job.updatedAt ? Date.parse(job.updatedAt) - Date.parse(job.startedAt) : 0;
         if (!wasActive || !done || tookMs < LONG_JOB_MS) continue;
         new Notification(job.state === "completed" ? `${job.name ?? "Asset"} is ready` : `${job.name ?? "A job"} failed`, {
-          body: job.state === "completed" ? "Open Asset Studio to review it." : (job.error ?? "Open Asset Studio for details.").slice(0, 180),
+          body: job.state === "completed" ? "Open Spritewright to review it." : (job.error ?? "Open Spritewright for details.").slice(0, 180),
           ...(job.id ? { tag: job.id } : {}),
         });
       }
@@ -639,9 +639,8 @@ export function App() {
       <aside className="sidebar">
         <div className="sidebar-brand">
           <strong className="wordmark">
-            Diorama<span aria-hidden="true">.</span>
+            Spritewright<span aria-hidden="true">.</span>
           </strong>
-          <small>Asset Studio</small>
         </div>
         <p className="sidebar-label">Mode</p>
         <nav className="sidebar-nav" aria-label="Mode">

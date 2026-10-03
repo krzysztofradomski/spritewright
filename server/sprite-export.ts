@@ -110,7 +110,7 @@ export async function exportAnimation(
     // Playback order, so an engine can build the clip (ping-pong included) without extra logic.
     animations: { [record.name]: order.map((index) => keys[index]) },
     meta: {
-      app: "Diorama Asset Studio",
+      app: "Spritewright",
       image: `${record.name}.png`,
       format: "RGBA8888",
       size: { w: sheetWidth, h: sheetHeight },

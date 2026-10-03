@@ -3,3 +3,4 @@ dist/
 data/
 games/
 .DS_Store
+.claude/

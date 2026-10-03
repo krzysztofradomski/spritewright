@@ -144,7 +144,7 @@ async function checkCodex(): Promise<ProviderStatus> {
         if (received[2] && received[3]) finish();
       }
     });
-    send({ id: 1, method: "initialize", params: { clientInfo: { name: "asset-studio", version: "1" } } });
+    send({ id: 1, method: "initialize", params: { clientInfo: { name: "spritewright", version: "1" } } });
   });
   if (!responses[1]) return status("codex", { state: "unknown", summary: "Codex did not answer.", details: [binary], canProbe: false });
   const account = responses[2]?.result?.account as { type?: string; planType?: string } | null | undefined;

@@ -92,7 +92,7 @@ export function buildWorkflow(input: { image: string; checkpoint: string; contro
     10: { class_type: "KSampler", inputs: { model: ["4", 0], positive: ["9", 0], negative: ["9", 1], latent_image: ["8", 0], seed: input.seed, steps: t.steps, cfg: t.cfg, sampler_name: t.sampler, scheduler: t.scheduler, denoise: t.denoise } },
     11: { class_type: "VAEDecode", inputs: { samples: ["10", 0], vae: ["4", 2] } },
     12: { class_type: "ImageScale", inputs: { image: ["11", 0], upscale_method: "nearest-exact", width: t.size, height: t.size, crop: "center" } },
-    13: { class_type: "SaveImage", inputs: { images: ["12", 0], filename_prefix: "asset-studio" } },
+    13: { class_type: "SaveImage", inputs: { images: ["12", 0], filename_prefix: "spritewright" } },
   };
 }
 
@@ -104,7 +104,7 @@ export async function drawFrame(frame: Buffer, workflow: (image: string) => obje
   const uploaded = (await (await comfy("/upload/image", { method: "POST", body: form, signal })).json()) as { name: string };
   const queued = (await (await comfy("/prompt", {
     method: "POST", headers: { "content-type": "application/json" }, signal,
-    body: JSON.stringify({ prompt: workflow(uploaded.name), client_id: "asset-studio" }),
+    body: JSON.stringify({ prompt: workflow(uploaded.name), client_id: "spritewright" }),
   })).json()) as { prompt_id: string };
   // ponytail: polling /history every 750ms; switch to the /ws socket if that ever shows up as load.
   for (;;) {
@@ -187,7 +187,7 @@ export async function runComfyUI(
       .extend({ left, top, right: box - rect.width - left, bottom: box - rect.height - top, background })
       .resize(input.size, input.size, { kernel: "nearest" })
       .png().toBuffer();
-    drawn.push({ input: await drawFrame(frame, workflow, `asset-studio-${row}-${column}.png`, signal), left: column * input.size, top: row * input.size });
+    drawn.push({ input: await drawFrame(frame, workflow, `spritewright-${row}-${column}.png`, signal), left: column * input.size, top: row * input.size });
   }
   if (!drawn.length) throw new Error("The source image has no frames to redraw.");
   const sheet = await sharp({ create: { width: columns * input.size, height: rows.length * input.size, channels: 4, background } })
